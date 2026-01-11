@@ -49,11 +49,11 @@ export const authAPI = {
       password,
       name,
     });
-    
+
     if (result.error) {
       throw new Error(result.error.message || 'Registration failed');
     }
-    
+
     return {
       user: result.data?.user,
       token: result.data?.token,
@@ -65,11 +65,11 @@ export const authAPI = {
       email,
       password,
     });
-    
+
     if (result.error) {
       throw new Error(result.error.message || 'Login failed');
     }
-    
+
     return {
       user: result.data?.user,
       token: result.data?.token,
@@ -79,23 +79,23 @@ export const authAPI = {
   googleAuth: async () => {
     const result = await authClient.signIn.social({
       provider: 'google',
-      callbackURL: `${API_BASE_URL}/`,
+      callbackURL: '/',
     });
-    
+
     if (result.error) {
       throw new Error(result.error.message || 'Google login failed');
     }
-    
+
     return result.data;
   },
 
   me: async () => {
     const session = await authClient.getSession();
-    
+
     if (!session.data?.user) {
       throw new Error('Not authenticated');
     }
-    
+
     // Return the user from the session with transformed data
     const user = session.data.user;
     return {
@@ -195,7 +195,7 @@ export const chatAPI = {
   getMessages: async (sessionId: string, limit = 50, cursor?: string) => {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (cursor) params.append('cursor', cursor);
-    
+
     return request<{
       messages: Array<{
         id: string;

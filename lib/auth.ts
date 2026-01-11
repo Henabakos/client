@@ -6,6 +6,8 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -40,6 +42,15 @@ export const auth = betterAuth({
     process.env.BETTER_AUTH_URL || 'http://localhost:3000',
     process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   ],
+  advanced: {
+    // Required for apps behind proxies like Render or Vercel
+    useSecureCookies: process.env.NODE_ENV === 'production',
+  },
+  logger: {
+    level: 'debug',
+    enabled: process.env.NODE_ENV !== 'production' || !!process.env.DEBUG_AUTH,
+  },
+
 });
 
 export type Session = typeof auth.$Infer.Session;
