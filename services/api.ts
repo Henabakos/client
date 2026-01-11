@@ -79,7 +79,7 @@ export const authAPI = {
   googleAuth: async () => {
     const result = await authClient.signIn.social({
       provider: 'google',
-      callbackURL: '/',
+      callbackURL: `${window.location.origin}`,
     });
 
     if (result.error) {
