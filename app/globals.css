@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #139d78;
+  --color-brand-light: rgba(19, 157, 120, 0.08);
+  --color-brand-shadow: rgba(19, 157, 120, 0.19);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+@layer components {
+  .sidebar-btn-active {
+    @apply bg-brand-light text-brand;
+  }
+
+  .sidebar-logo-btn {
+    @apply bg-brand rounded-xl flex items-center justify-center text-white hover:scale-105 transition-transform shadow-lg;
+    box-shadow: 0 10px 15px -3px var(--color-brand-shadow);
+  }
+
+  .sidebar-logo-btn-mobile {
+    @apply bg-brand rounded-lg flex items-center justify-center text-white shadow-md;
+  }
+
+  .sidebar-sparkle-btn {
+    @apply p-3 text-brand cursor-pointer hover:bg-gray-100 rounded-xl transition-all;
+  }
+
+  .profile-avatar {
+    @apply w-10 h-10 rounded-full border-2 border-white shadow-sm hover:border-brand transition-all;
+  }
+}

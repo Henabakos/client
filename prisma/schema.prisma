@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Better Auth Tables
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String
+  image         String?
+  isOnline      Boolean   @default(false)
+  lastSeen      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Better Auth relations
+  sessions      Session[]
+  accounts      Account[]
+
+  // Chat relations
+  chatSessions1 ChatSession[] @relation("User1")
+  chatSessions2 ChatSession[] @relation("User2")
+  messages      Message[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+// ============================================
+// Chat Application Tables
+// ============================================
+
+model ChatSession {
+  id              String    @id @default(cuid())
+  user1Id         String
+  user2Id         String
+  lastMessage     String?
+  lastMessageTime DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user1    User      @relation("User1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2    User      @relation("User2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  // Ensure unique chat session per user pair (ordered)
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
+
+model Message {
+  id        String        @id @default(cuid())
+  sessionId String
+  senderId  String
+  content   String
+  status    MessageStatus @default(SENT)
+  isAI      Boolean       @default(false)
+  createdAt DateTime      @default(now())
+
+  // Relations
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sender  User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}

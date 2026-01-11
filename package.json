@@ -1,0 +1,46 @@
+{
+  "name": "chat-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx server.ts",
+    "dev:next": "next dev",
+    "build": "next build",
+    "start": "NODE_ENV=production npx tsx server.ts",
+    "start:next": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "npx tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.35.0",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "@tailwindcss/postcss": "^4.1.18",
+    "better-auth": "^1.4.10",
+    "dotenv": "^17.2.3",
+    "next": "14.2.33",
+    "postcss": "^8.5.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.0",
+    "tailwindcss": "^4.1.18",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.33",
+    "prisma": "^7.2.0",
+    "typescript": "^5"
+  }
+}
