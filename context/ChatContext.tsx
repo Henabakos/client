@@ -66,7 +66,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setCurrentUser({
             id: session.user.id,
             name: session.user.name,
-            avatar: session.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name)}&background=random`,
+            avatar: getAvatarUrl(session.user.name, session.user.image),
             status: UserStatus.ONLINE,
             email: session.user.email,
           });
@@ -355,7 +355,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentUser({
         id: data.user.id,
         name: data.user.name,
-        avatar: data.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.name)}&background=random`,
+        avatar: getAvatarUrl(data.user.name, data.user.image),
         status: UserStatus.ONLINE,
         email: data.user.email,
       });
@@ -368,7 +368,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentUser({
         id: data.user.id,
         name: data.user.name,
-        avatar: data.user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.name)}&background=random`,
+        avatar: getAvatarUrl(data.user.name, data.user.image),
         status: UserStatus.ONLINE,
         email: data.user.email,
       });
@@ -622,3 +622,20 @@ function formatTime(dateInput: string | Date): string {
   // Older
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
+
+// Helper function to get avatar URL with initials
+export function getAvatarUrl(name: string, image?: string | null): string {
+  if (image) return image;
+
+  const parts = name.trim().split(/\s+/);
+  let initials = '';
+  if (parts.length > 0) {
+    initials += parts[0][0];
+    if (parts.length > 1) {
+      initials += parts[parts.length - 1][0];
+    }
+  }
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials || 'U')}&background=random&color=fff&size=256&font-size=0.33&bold=true`;
+}
+

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getAuthenticatedUser } from '@/lib/middleware';
+import { getAuthenticatedUser, getAvatarUrl } from '@/lib/middleware';
 
 // GET /api/chat/session/[userId] - Get or create chat session with a user
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     const currentUser = await getAuthenticatedUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -134,7 +134,7 @@ export async function GET(
         id: sessionOtherUser.id,
         name: sessionOtherUser.name,
         email: sessionOtherUser.email,
-        avatar: sessionOtherUser.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sessionOtherUser.name)}&background=random`,
+        avatar: getAvatarUrl(sessionOtherUser.name, sessionOtherUser.image),
         status: sessionOtherUser.isOnline ? 'Online' : 'Offline',
         lastSeen: sessionOtherUser.lastSeen?.toISOString(),
       },

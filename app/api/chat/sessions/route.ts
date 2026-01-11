@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import prisma from '@/lib/prisma';
-import { getAuthenticatedUser } from '@/lib/middleware';
+import { getAuthenticatedUser, getAvatarUrl } from '@/lib/middleware';
 
 // GET /api/chat/sessions - Get all chat sessions for current user
 export async function GET() {
@@ -74,7 +74,7 @@ export async function GET() {
           id: otherUser.id,
           name: otherUser.name,
           email: otherUser.email,
-          avatar: otherUser.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(otherUser.name)}&background=random`,
+          avatar: getAvatarUrl(otherUser.name, otherUser.image),
           status: otherUser.isOnline ? 'Online' : 'Offline',
           lastSeen: otherUser.lastSeen?.toISOString(),
         },

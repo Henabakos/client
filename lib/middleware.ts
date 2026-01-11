@@ -44,11 +44,11 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
  */
 export async function requireAuth(): Promise<AuthenticatedUser> {
   const user = await getAuthenticatedUser();
-  
+
   if (!user) {
     throw new Error('Unauthorized');
   }
-  
+
   return user;
 }
 
@@ -61,14 +61,14 @@ export function withAuth<T>(
   return async (req: NextRequest): Promise<NextResponse> => {
     try {
       const user = await getAuthenticatedUser();
-      
+
       if (!user) {
         return NextResponse.json(
           { error: 'Unauthorized' },
           { status: 401 }
         );
       }
-      
+
       return handler(req, user);
     } catch (error) {
       console.error('Auth middleware error:', error);
@@ -89,8 +89,27 @@ export function getTokenFromRequest(req: NextRequest): string | null {
   if (authHeader?.startsWith('Bearer ')) {
     return authHeader.slice(7);
   }
-  
+
   // Try cookie
   const cookie = req.cookies.get('better-auth.session_token');
   return cookie?.value ?? null;
 }
+
+/**
+ * Helper function to get avatar URL with initials
+ */
+export function getAvatarUrl(name: string, image?: string | null): string {
+  if (image) return image;
+
+  const parts = name.trim().split(/\s+/);
+  let initials = '';
+  if (parts.length > 0) {
+    initials += parts[0][0];
+    if (parts.length > 1) {
+      initials += parts[parts.length - 1][0];
+    }
+  }
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials || 'U')}&background=random&color=fff&size=256&font-size=0.33&bold=true`;
+}
+

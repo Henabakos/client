@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import prisma from '@/lib/prisma';
-import { getAuthenticatedUser } from '@/lib/middleware';
+import { getAuthenticatedUser, getAvatarUrl } from '@/lib/middleware';
 
 // GET /api/users - List all users (except current user)
 export async function GET() {
@@ -40,7 +40,7 @@ export async function GET() {
       id: user.id,
       name: user.name,
       email: user.email,
-      avatar: user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`,
+      avatar: getAvatarUrl(user.name, user.image),
       status: user.isOnline ? 'Online' : 'Offline',
       lastSeen: user.lastSeen?.toISOString(),
     }));
