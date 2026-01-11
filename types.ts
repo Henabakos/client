@@ -18,7 +18,7 @@ export interface Message {
   senderId: string;
   text: string;
   timestamp: string;
-  status: 'sent' | 'delivered' | 'read';
+  status: 'SENT' | 'DELIVERED' | 'READ';
   isAI?: boolean;
 }
 

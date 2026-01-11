@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/middleware';
 
 // GET /api/users - List all users (except current user)
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const currentUser = await getAuthenticatedUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },

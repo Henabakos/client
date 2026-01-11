@@ -11,7 +11,7 @@ const refineSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const currentUser = await getAuthenticatedUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
 
     const { text } = validation.data;
 
-    const ai = new GoogleGenAI({ 
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || '' 
+    const ai = new GoogleGenAI({
+      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || ''
     });
 
     const response = await ai.models.generateContent({
@@ -53,17 +53,18 @@ Refined message:`,
     const refinedText = response.text?.trim() || text;
 
     return NextResponse.json({ refinedText });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { status?: number; message?: string };
     console.error('Error refining text:', error);
-    
+
     // Check for quota exceeded error
-    if (error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('quota')) {
+    if (err?.status === 429 || err?.message?.includes('429') || err?.message?.includes('quota')) {
       return NextResponse.json(
         { error: 'AI quota exceeded. Please try again later.' },
         { status: 429 }
       );
     }
-    
+
     return NextResponse.json(
       { error: 'Failed to refine text' },
       { status: 500 }

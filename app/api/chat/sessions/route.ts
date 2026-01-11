@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/middleware';
 
 // GET /api/chat/sessions - Get all chat sessions for current user
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const currentUser = await getAuthenticatedUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
       // Get the other user in the session
       const otherUser = session.user1Id === currentUser.id ? session.user2 : session.user1;
       const isAI = otherUser.email === 'ai@chatflow.app';
-      
+
       return {
         id: session.id,
         user: {

@@ -14,7 +14,7 @@ const PDFIcon = () => (
 );
 
 const LinkItem: React.FC<{ title: string; url: string; icon: string }> = ({ title, url, icon }) => (
-  <div className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer group">
+  <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer group">
     <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center bg-white">
       <img src={icon} alt="" className="w-6 h-6 object-contain" />
     </div>
@@ -22,7 +22,7 @@ const LinkItem: React.FC<{ title: string; url: string; icon: string }> = ({ titl
       <h4 className="text-sm font-semibold text-gray-900 truncate">{title}</h4>
       <p className="text-[11px] text-gray-500 truncate">A new tool that blends your everyday work apps...</p>
     </div>
-  </div>  
+  </a>
 );
 
 const DocItem: React.FC<{ name: string; info: string; type: string }> = ({ name, info, type }) => (
@@ -50,10 +50,10 @@ const MediaGrid = () => {
           <div className="grid grid-cols-4 gap-2">
             {Array.from({ length: section.count }).map((_, i) => (
               <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img 
-                  src={`https://picsum.photos/seed/${section.month}${i}/200/200`} 
-                  className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" 
-                  alt="" 
+                <img
+                  src={`https://picsum.photos/seed/${section.month}${i}/200/200`}
+                  className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
+                  alt=""
                 />
               </div>
             ))}
@@ -75,8 +75,8 @@ export const ContactInfo: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
       {/* Header */}
       <div className="p-6 lg:p-8 flex items-center justify-between shrink-0">
         <h2 className="text-[18px] lg:text-[20px] font-bold text-gray-900">Contact Info</h2>
-        <button 
-          onClick={toggleInfo} 
+        <button
+          onClick={toggleInfo}
           className="p-1.5 hover:bg-gray-100 rounded-full transition-colors group"
         >
           <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,10 +89,10 @@ export const ContactInfo: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
         {/* Profile Card */}
         <div className="px-6 lg:px-8 flex flex-col items-center text-center pb-8">
           <div className="relative mb-4">
-            <img 
-              src={activeConversation.user.avatar} 
-              className="w-20 h-20 lg:w-[100px] lg:h-[100px] rounded-full object-cover border-4 border-white shadow-xl" 
-              alt="" 
+            <img
+              src={activeConversation.user.avatar}
+              className="w-20 h-20 lg:w-[100px] lg:h-[100px] rounded-full object-cover border-4 border-white shadow-xl"
+              alt=""
             />
           </div>
           <h3 className="text-[16px] lg:text-[18px] font-bold text-gray-900">{activeConversation.user.name}</h3>
@@ -121,11 +121,10 @@ export const ContactInfo: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-2 text-[11px] lg:text-[12px] font-bold rounded-xl transition-all ${
-                  activeTab === tab 
-                    ? 'bg-white shadow-md text-gray-900' 
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`flex-1 py-2 text-[11px] lg:text-[12px] font-bold rounded-xl transition-all ${activeTab === tab
+                  ? 'bg-white shadow-md text-gray-900'
+                  : 'text-gray-400 hover:text-gray-600'
+                  }`}
               >
                 {tab}
               </button>

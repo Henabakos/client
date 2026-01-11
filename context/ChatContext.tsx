@@ -53,7 +53,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [isOnline, setIsOnline] = useState(false);
-  
+
   // Track current session for socket
   const currentSessionRef = useRef<string | null>(null);
 
@@ -76,7 +76,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setIsLoading(false);
     };
-    
+
     initializeAuth();
   }, []);
 
@@ -147,7 +147,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           setConversations(formattedConversations);
         }
-        
+
         // Initialize AI conversation messages
         setMessages(prev => ({
           ...prev,
@@ -156,7 +156,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             senderId: 'ai-assistant',
             text: "Hello! I'm ChatFlow AI. How can I help you today? 🌟",
             timestamp: '9:00 AM',
-            status: 'delivered',
+            status: 'DELIVERED',
             isAI: true,
           }],
         }));
@@ -178,7 +178,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsOnline(true);
       }
     };
-    
+
     connectSocket();
 
     // Listen for new messages
@@ -189,7 +189,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         senderId: msg.senderId,
         text: msg.text,
         timestamp: formatTime(msg.timestamp),
-        status: msg.status as 'sent' | 'delivered' | 'read',
+        status: msg.status as 'SENT' | 'DELIVERED' | 'READ',
       };
 
       setMessages(prev => {
@@ -200,7 +200,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (exists) {
             return {
               ...prev,
-              [msg.sessionId]: sessionMessages.map(m => 
+              [msg.sessionId]: sessionMessages.map(m =>
                 m.id === msg.tempId ? formattedMsg : m
               ),
             };
@@ -217,8 +217,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       // Update conversation last message
-      setConversations(prev => prev.map(c => 
-        c.id === msg.sessionId 
+      setConversations(prev => prev.map(c =>
+        c.id === msg.sessionId
           ? { ...c, lastMessage: msg.text, lastMessageTime: 'Just now' }
           : c
       ));
@@ -249,7 +249,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Listen for user online/offline
     const unsubOnline = socketService.on('user:online', (data: { userId: string }) => {
-      setAllUsers(prev => prev.map(u => 
+      setAllUsers(prev => prev.map(u =>
         u.id === data.userId ? { ...u, status: UserStatus.ONLINE } : u
       ));
       setConversations(prev => prev.map(c =>
@@ -272,12 +272,12 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setMessages(prev => {
         const sessionMessages = prev[data.sessionId];
         if (!sessionMessages) return prev;
-        
+
         return {
           ...prev,
           [data.sessionId]: sessionMessages.map(m => ({
             ...m,
-            status: 'read' as const,
+            status: 'READ' as const,
           })),
         };
       });
@@ -301,24 +301,24 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (currentSessionRef.current) {
       socketService.leaveRoom(currentSessionRef.current);
     }
-    
+
     if (activeConversation && !activeConversation.isAI) {
       socketService.joinRoom(activeConversation.id);
       currentSessionRef.current = activeConversation.id;
-      
+
       // Load messages for this session
       loadMessages(activeConversation.id);
-      
+
       // Mark messages as read via socket (real-time notification to other user)
       socketService.markAsRead(activeConversation.id);
-      
+
       // Reset unread count for this conversation
       setConversations(prev => prev.map(c =>
         c.id === activeConversation.id ? { ...c, unreadCount: 0 } : c
       ));
     } else {
       currentSessionRef.current = null;
-      
+
       // Load AI messages if needed
       if (activeConversation?.isAI && activeConversation.id !== 'ai-assistant') {
         loadMessages(activeConversation.id);
@@ -328,7 +328,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadMessages = async (sessionId: string) => {
     if (sessionId === 'ai-assistant') return;
-    
+
     try {
       const data = await chatAPI.getMessages(sessionId);
       const formattedMessages: Message[] = data.messages.map((m) => ({
@@ -336,10 +336,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         senderId: m.senderId,
         text: m.text,
         timestamp: formatTime(m.timestamp),
-        status: m.status as 'sent' | 'delivered' | 'read',
+        status: m.status as 'SENT' | 'DELIVERED' | 'READ',
         isAI: m.isAI,
       }));
-      
+
       setMessages(prev => ({
         ...prev,
         [sessionId]: formattedMessages,
@@ -397,7 +397,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setActiveConversation = (conv: Conversation | null) => {
     setActiveConv(conv);
     setIsNewMessageOpen(false);
-    
+
     if (conv) {
       // Reset unread count
       setConversations(prev => prev.map(c =>
@@ -427,7 +427,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       senderId: 'me',
       text,
       timestamp,
-      status: 'sent',
+      status: 'SENT',
     };
 
     setMessages(prev => ({
@@ -446,17 +446,17 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         // For streaming AI response
         const response = await aiAPI.chat(conversationId, text);
-        
+
         // Handle streaming response
         const reader = response.body?.getReader();
         const decoder = new TextDecoder();
         let aiResponse = '';
-        
+
         if (reader) {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            
+
             const chunk = decoder.decode(value, { stream: true });
             // Parse SSE data
             const lines = chunk.split('\n');
@@ -471,13 +471,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           }
         }
-        
+
         const aiMessage: Message = {
           id: `ai-${Date.now()}`,
           senderId: conv.user.id,
           text: aiResponse || 'I apologize, but I could not generate a response.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          status: 'delivered',
+          status: 'DELIVERED',
           isAI: true,
         };
 
@@ -497,7 +497,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           senderId: conv.user.id,
           text: 'Sorry, I encountered an error. Please try again.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          status: 'delivered',
+          status: 'DELIVERED',
           isAI: true,
         };
         setMessages(prev => ({
@@ -516,7 +516,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const startNewConversation = async (userId: string) => {
     try {
       const session = await chatAPI.getOrCreateSession(userId);
-      
+
       // Check if conversation already exists
       const existingConv = conversations.find(c => c.id === session.id);
       if (existingConv) {
@@ -588,37 +588,37 @@ export const useChat = () => {
 // Helper function to format time
 function formatTime(dateInput: string | Date): string {
   if (!dateInput) return '';
-  
+
   const date = new Date(dateInput);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  
+
   // Less than 1 minute
   if (diff < 60000) return 'Just now';
-  
+
   // Less than 1 hour
   if (diff < 3600000) {
     const mins = Math.floor(diff / 60000);
     return `${mins} min${mins > 1 ? 's' : ''} ago`;
   }
-  
+
   // Same day
   if (date.toDateString() === now.toDateString()) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  
+
   // Yesterday
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
   if (date.toDateString() === yesterday.toDateString()) {
     return 'Yesterday';
   }
-  
+
   // Within a week
   if (diff < 7 * 24 * 3600000) {
     return date.toLocaleDateString([], { weekday: 'short' });
   }
-  
+
   // Older
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
