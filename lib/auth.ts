@@ -45,10 +45,10 @@ export const auth = betterAuth({
   advanced: {
     // Required for apps behind proxies like Render or Vercel
     useSecureCookies: process.env.NODE_ENV === 'production',
+    trustProxy: true,
   },
   logger: {
     level: 'debug',
-    enabled: process.env.NODE_ENV !== 'production' || !!process.env.DEBUG_AUTH,
   },
 
 });
