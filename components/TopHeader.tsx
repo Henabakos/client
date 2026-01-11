@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Image from 'next/image';
 import { useChat } from '../context/ChatContext';
 
 export const TopHeader: React.FC = () => {
@@ -26,9 +27,9 @@ export const TopHeader: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <input 
-            type="text" 
-            placeholder="Search" 
+          <input
+            type="text"
+            placeholder="Search"
             className="w-[240px] bg-gray-50 border border-gray-100 rounded-xl py-2 pl-9 pr-12 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#139d7810] transition-all"
           />
           <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border border-gray-100 rounded-md px-1.5 py-0.5 shadow-sm">
@@ -56,10 +57,12 @@ export const TopHeader: React.FC = () => {
 
         {/* Profile Summary */}
         <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1.5 rounded-xl transition-all pr-3">
-          <img 
-            src={currentUser?.avatar || 'https://picsum.photos/seed/user/40/40'} 
-            className="w-9 h-9 rounded-full object-cover border border-gray-100 shadow-sm" 
-            alt="User" 
+          <Image
+            src={currentUser?.avatar || 'https://picsum.photos/seed/user/40/40'}
+            className="rounded-full object-cover border border-gray-100 shadow-sm"
+            alt="User"
+            width={36}
+            height={36}
           />
           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { GoogleGenAI } from "@google/genai";
 import { getAuthenticatedUser } from '@/lib/middleware';
 import { z } from 'zod';

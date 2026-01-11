@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useChat } from '../context/ChatContext';
 
 type Tab = 'Media' | 'Link' | 'Docs';
@@ -15,8 +16,8 @@ const PDFIcon = () => (
 
 const LinkItem: React.FC<{ title: string; url: string; icon: string }> = ({ title, url, icon }) => (
   <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer group">
-    <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center bg-white">
-      <img src={icon} alt="" className="w-6 h-6 object-contain" />
+    <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center bg-white relative">
+      <Image src={icon} alt="" className="object-contain" width={24} height={24} />
     </div>
     <div className="flex-1 min-w-0">
       <h4 className="text-sm font-semibold text-gray-900 truncate">{title}</h4>
@@ -49,11 +50,13 @@ const MediaGrid = () => {
           <p className="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-wider">{section.month}</p>
           <div className="grid grid-cols-4 gap-2">
             {Array.from({ length: section.count }).map((_, i) => (
-              <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img
+              <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 group cursor-pointer relative">
+                <Image
                   src={`https://picsum.photos/seed/${section.month}${i}/200/200`}
                   className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
                   alt=""
+                  fill
+                  sizes="(max-width: 768px) 25vw, 100px"
                 />
               </div>
             ))}
@@ -88,11 +91,13 @@ export const ContactInfo: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {/* Profile Card */}
         <div className="px-6 lg:px-8 flex flex-col items-center text-center pb-8">
-          <div className="relative mb-4">
-            <img
+          <div className="relative mb-4 w-20 h-20 lg:w-[100px] lg:h-[100px]">
+            <Image
               src={activeConversation.user.avatar}
-              className="w-20 h-20 lg:w-[100px] lg:h-[100px] rounded-full object-cover border-4 border-white shadow-xl"
+              className="rounded-full object-cover border-4 border-white shadow-xl"
               alt=""
+              fill
+              sizes="(max-width: 1024px) 80px, 100px"
             />
           </div>
           <h3 className="text-[16px] lg:text-[18px] font-bold text-gray-900">{activeConversation.user.name}</h3>

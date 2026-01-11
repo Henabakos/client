@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { useChat } from '../context/ChatContext';
 import { ICONS } from '../constants';
 import { Message } from '../types';
@@ -197,25 +198,31 @@ export const ChatPanel: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
             className="flex items-center gap-3 lg:gap-4 cursor-pointer hover:bg-gray-50 p-2 -ml-2 rounded-xl transition-all"
             onClick={toggleInfo}
           >
-            <div className="relative">
-              <img src={activeConversation.user.avatar} className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover" alt="" />
+            <div className="relative w-10 h-10 lg:w-12 lg:h-12">
+              <Image
+                src={activeConversation.user.avatar}
+                className="rounded-full object-cover"
+                alt=""
+                fill
+                sizes="(max-width: 1024px) 40px, 48px"
+              />
               {activeConversation.user.status === 'Online' && (
                 <div className="absolute bottom-0 right-0 w-2.5 h-2.5 lg:w-3 lg:h-3 bg-[#139d78] border-2 border-white rounded-full"></div>
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm lg:text-lg font-bold text-gray-900 leading-tight truncate max-w-[120px] sm:max-w-none">
-                  {activeConversation.user.name}
-                </h2>
-                {activeConversation.isAI && (
-                  <span className="bg-[#139d7815] text-[#139d78] text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider">AI</span>
-                )}
-              </div>
-              <p className="text-xs text-[#139d78] font-medium transition-colors">
-                {currentlyTyping ? 'Typing...' : activeConversation.user.status}
-              </p>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm lg:text-lg font-bold text-gray-900 leading-tight truncate max-w-[120px] sm:max-w-none">
+                {activeConversation.user.name}
+              </h2>
+              {activeConversation.isAI && (
+                <span className="bg-[#139d7815] text-[#139d78] text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider">AI</span>
+              )}
             </div>
+            <p className="text-xs text-[#139d78] font-medium transition-colors">
+              {currentlyTyping ? 'Typing...' : activeConversation.user.status}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-1 lg:gap-2">
@@ -244,11 +251,13 @@ export const ChatPanel: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
       </div>
 
       {/* Error Toast */}
-      {refineError && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-medium animate-in fade-in slide-in-from-bottom-2 z-50">
-          {refineError}
-        </div>
-      )}
+      {
+        refineError && (
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-medium animate-in fade-in slide-in-from-bottom-2 z-50">
+            {refineError}
+          </div>
+        )
+      }
 
       {/* Input */}
       <div className="px-4 lg:px-8 pb-4 lg:pb-8 pt-2">
@@ -299,6 +308,6 @@ export const ChatPanel: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };

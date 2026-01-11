@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { useChat } from '../context/ChatContext';
 import { User } from '../types';
 
@@ -68,7 +69,7 @@ export const NewMessageModal: React.FC = () => {
               onClick={() => handleSelectUser(user)}
               className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#f3f4f6] transition-colors text-left group"
             >
-              <img src={user.avatar} className="w-8 h-8 rounded-full object-cover" alt="" />
+              <Image src={user.avatar} className="rounded-full object-cover" alt="" width={32} height={32} />
               <span className="text-[13px] font-semibold text-gray-700 group-hover:text-gray-900">{user.name}</span>
             </button>
           ))}

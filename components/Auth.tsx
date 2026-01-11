@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useChat } from '../context/ChatContext';
 import { z } from 'zod';
 
@@ -171,7 +172,7 @@ export const Auth: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center gap-3 mb-12">
             <div className="w-12 h-12  rounded-xl flex items-center justify-center shadow-xl">
-              <img src="/Container.png" alt="logo" />
+              <Image src="/Container.png" alt="logo" width={48} height={48} />
             </div>
             <span className="font-bold text-2xl tracking-tight">ChatFlow</span>
           </div>
@@ -232,7 +233,7 @@ export const Auth: React.FC = () => {
               disabled={isLoading}
               className="flex items-center justify-center gap-2.5 py-3 px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 group bg-white"
             >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5 group-hover:scale-110 transition-transform" alt="Google" />
+              <Image src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="group-hover:scale-110 transition-transform" alt="Google" width={20} height={20} />
               <span className="text-sm font-semibold text-gray-700">Google</span>
             </button>
             <button

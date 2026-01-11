@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { getAuthenticatedUser } from '@/lib/middleware';
 
 // GET /api/ai/status - Check AI availability
 export async function GET() {
   try {
     const currentUser = await getAuthenticatedUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { error: 'Unauthorized' },
