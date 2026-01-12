@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
-import { GoogleGenAI } from "@google/genai";
+import { geminiService } from '@/services/geminiService';
 import { getAuthenticatedUser } from '@/lib/middleware';
 import { z } from 'zod';
 
@@ -31,29 +31,10 @@ export async function POST(req: NextRequest) {
     }
 
     const { text } = validation.data;
-
-    const ai = new GoogleGenAI({
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || ''
-    });
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: `Refine and improve the following message to make it clearer, more professional, and well-written. Keep the same meaning and intent. Only return the refined text, nothing else. If the text is already good, return it as is with minor improvements if needed.
-
-Original message: "${text}"
-
-Refined message:`,
-      config: {
-        temperature: 0.7,
-        topP: 0.9,
-        topK: 40,
-        maxOutputTokens: 500,
-      },
-    });
-
-    const refinedText = response.text?.trim() || text;
+    const refinedText = await geminiService.refineText(text);
 
     return NextResponse.json({ refinedText });
+
   } catch (error: unknown) {
     const err = error as { status?: number; message?: string };
     console.error('Error refining text:', error);

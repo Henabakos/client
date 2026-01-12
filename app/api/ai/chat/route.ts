@@ -115,14 +115,21 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        // Get AI response using Gemini
-        // We'll use a simple implementation for now. Since the frontend expects streaming, 
-        // but the current geminiService doesn't support it easily in this structure, 
-        // we'll implement a simple non-streaming response format that the frontend can parse,
-        // or just return the text.
+        // Get recent conversation history for context (last 10 messages)
+        const recentMessages = await prisma.message.findMany({
+            where: { sessionId },
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+        });
 
-        // Actually, ChatContext.tsx expects a streaming response in Vercel AI SDK format (0:\"...\")
-        const aiResponse = await geminiService.refineText(message); // Or a proper chat method
+        // Format history for Gemini (reverse to get chronological order)
+        const history = recentMessages.reverse().map(msg => ({
+            role: (msg.senderId === aiUser.id ? 'model' : 'user') as 'model' | 'user',
+            parts: msg.content,
+        }));
+
+        // Get AI response using Gemini with history
+        const aiResponse = await geminiService.chat(message, history);
 
         // Save AI message
         await prisma.message.create({
@@ -144,6 +151,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
+
         // Return in Vercel AI SDK format for the frontend's reader
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
@@ -157,8 +165,16 @@ export async function POST(req: NextRequest) {
         return new Response(stream, {
             headers: { 'Content-Type': 'text/plain; charset=utf-8' },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('AI chat error:', error);
+
+        if (error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('quota')) {
+            return NextResponse.json(
+                { error: 'AI quota exceeded. Please try again later.' },
+                { status: 429 }
+            );
+        }
+
         return NextResponse.json({ error: 'AI failed to respond' }, { status: 500 });
     }
 }
