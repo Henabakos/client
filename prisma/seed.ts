@@ -12,11 +12,13 @@ async function main() {
   // Create AI user
   const aiUser = await prisma.user.upsert({
     where: { email: 'ai@chatflow.app' },
-    update: {},
+    update: {
+      image: '/Container.png',
+    },
     create: {
       email: 'ai@chatflow.app',
       name: 'ChatFlow AI',
-      image: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff',
+      image: '/Container.png',
       isOnline: true,
       emailVerified: true,
     },
@@ -28,31 +30,32 @@ async function main() {
     {
       email: 'alice@example.com',
       name: 'Alice Johnson',
-      image: 'https://ui-avatars.com/api/?name=Alice+Johnson&background=random',
     },
     {
       email: 'bob@example.com',
       name: 'Bob Smith',
-      image: 'https://ui-avatars.com/api/?name=Bob+Smith&background=random',
     },
     {
       email: 'charlie@example.com',
       name: 'Charlie Brown',
-      image: 'https://ui-avatars.com/api/?name=Charlie+Brown&background=random',
     },
   ];
 
   for (const userData of demoUsers) {
     const user = await prisma.user.upsert({
       where: { email: userData.email },
-      update: {},
+      update: {
+        image: null, // Clear existing images to use initials-based placeholders
+      },
       create: {
         ...userData,
         emailVerified: true,
+        image: null,
       },
     });
-    console.log('✅ Demo user created:', user.email);
+    console.log('✅ Demo user updated/created:', user.email);
   }
+
 
   console.log('🎉 Seed completed successfully!');
 }

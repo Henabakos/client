@@ -33,11 +33,10 @@ interface ChatContextType {
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-// AI Assistant constant - acts as a virtual user
 const AI_ASSISTANT: User = {
   id: 'ai-assistant',
   name: 'ChatFlow AI',
-  avatar: 'https://ui-avatars.com/api/?name=AI&background=6366f1&color=fff',
+  avatar: '/Container.png',
   status: UserStatus.ONLINE,
 };
 
@@ -350,7 +349,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string) => {
+    resetState();
     const data = await authAPI.login(email, password);
+
     if (data.user) {
       setCurrentUser({
         id: data.user.id,
@@ -363,8 +364,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (email: string, password: string, name: string) => {
+    resetState();
     const data = await authAPI.register(email, password, name);
     if (data.user) {
+
       setCurrentUser({
         id: data.user.id,
         name: data.user.name,
@@ -383,6 +386,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     authAPI.logout().catch(console.error);
     socketService.disconnect();
+    resetState();
+  };
+
+  const resetState = () => {
     setCurrentUser(null);
     setActiveConv(null);
     setConversations([]);
@@ -393,6 +400,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsNewMessageOpen(false);
     setIsOnline(false);
   };
+
 
   const setActiveConversation = (conv: Conversation | null) => {
     setActiveConv(conv);
@@ -626,6 +634,8 @@ function formatTime(dateInput: string | Date): string {
 // Helper function to get avatar URL with initials
 export function getAvatarUrl(name: string, image?: string | null): string {
   if (image) return image;
+  if (name === 'ChatFlow AI') return '/Container.png';
+
 
   const parts = name.trim().split(/\s+/);
   let initials = '';

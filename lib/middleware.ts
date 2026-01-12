@@ -100,6 +100,8 @@ export function getTokenFromRequest(req: NextRequest): string | null {
  */
 export function getAvatarUrl(name: string, image?: string | null): string {
   if (image) return image;
+  if (name === 'ChatFlow AI') return '/Container.png';
+
 
   const parts = name.trim().split(/\s+/);
   let initials = '';

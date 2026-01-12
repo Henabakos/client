@@ -43,7 +43,6 @@ export const auth = betterAuth({
     process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   ],
   advanced: {
-    // Required for apps behind proxies like Render or Vercel
     useSecureCookies: process.env.NODE_ENV === 'production',
     trustProxy: true,
   },
